@@ -1,6 +1,9 @@
 package com.kodiiiofc.urbanuniversity.diary
 
+import android.Manifest
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -32,5 +35,26 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        val permissionsLocation = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        permissions.launch(permissionsLocation)
+
+    }
+
+    private val permissions = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        result ->
+        var allAreGranted = true
+        for (isGranted in result.values) {
+            allAreGranted = allAreGranted && isGranted
+        }
+        if (allAreGranted) {
+            Toast.makeText(this@MainActivity, "Разрешения предоставлены", Toast.LENGTH_LONG)
+        } else {
+            Toast.makeText(this@MainActivity, "В разрешениях отказано", Toast.LENGTH_LONG)
+        }
     }
 }
